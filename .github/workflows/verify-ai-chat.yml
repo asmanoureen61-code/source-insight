@@ -1,0 +1,61 @@
+name: Verify AI Chat
+
+on:
+  push:
+    branches:
+      - feature/complete-rag-ui
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: feature/complete-rag-ui
+          fetch-depth: 0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies and refresh lockfile
+        run: bun install
+
+      - name: Commit lockfile if changed
+        run: |
+          if git diff --quiet -- bun.lock; then
+            echo "bun.lock unchanged"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add bun.lock
+            git commit -m "Refresh bun lockfile for AI SDKs"
+            git push origin HEAD:feature/complete-rag-ui
+          fi
+
+      - name: Build
+        run: bun run build
+
+      - name: Check server-only AI secret naming
+        run: |
+          if grep -R --line-number --exclude='.env.example' --exclude='*.md' --exclude='bun.lock' -E 'VITE_(OPENAI|ANTHROPIC)|NEXT_PUBLIC_(OPENAI|ANTHROPIC)' src server 2>/dev/null; then
+            echo "Forbidden frontend AI secret reference found"
+            exit 1
+          fi
+          echo "No frontend AI secret references found"
+
+      - name: Report provider secret availability
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_OPUS_MODEL_ID: ${{ secrets.CLAUDE_OPUS_MODEL_ID }}
+        run: |
+          test -n "$OPENAI_API_KEY" && echo "OPENAI_API_KEY=present" || echo "OPENAI_API_KEY=missing"
+          test -n "$ANTHROPIC_API_KEY" && echo "ANTHROPIC_API_KEY=present" || echo "ANTHROPIC_API_KEY=missing"
+          test -n "$CLAUDE_OPUS_MODEL_ID" && echo "CLAUDE_OPUS_MODEL_ID=present" || echo "CLAUDE_OPUS_MODEL_ID=missing"
