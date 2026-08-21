@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { isAIModelId } from "@/lib/ai-models";
 
+const MAX_BODY_BYTES = 16_384;
 const bodySchema = z.object({
   message: z.string().trim().min(1).max(4000),
   model: z.string().trim(),
@@ -45,6 +46,11 @@ export const Route = createFileRoute("/api/chat")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        const contentLength = Number(request.headers.get("content-length") || "0");
+        if (Number.isFinite(contentLength) && contentLength > MAX_BODY_BYTES) {
+          return Response.json({ success: false, error: "Request is too large." }, { status: 413 });
+        }
+
         let parsed: z.infer<typeof bodySchema>;
         try {
           parsed = bodySchema.parse(await request.json());
