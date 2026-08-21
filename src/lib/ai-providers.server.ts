@@ -38,7 +38,10 @@ export async function* callOpenAI(
 
   const input = messages
     .filter((message) => message.role !== "system")
-    .map((message) => ({ role: message.role, content: message.content }));
+    .map((message) => ({
+      role: message.role as "user" | "assistant",
+      content: message.content,
+    }));
 
   const stream = await openai().responses.create(
     {
