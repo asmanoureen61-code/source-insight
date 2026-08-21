@@ -5,7 +5,6 @@ import {
   Check,
   ChevronDown,
   Copy,
-  Loader2,
   RefreshCw,
   Send,
   Square,
@@ -112,9 +111,8 @@ function MarkdownMessage({ children }: { children: string }) {
               {content}
             </pre>
           ),
-          code: ({ className, children: content, ...props }) => (
+          code: ({ className, children: content }) => (
             <code
-              {...props}
               className={cx(
                 className,
                 className?.includes("language-")
@@ -132,8 +130,8 @@ function MarkdownMessage({ children }: { children: string }) {
           ),
           th: ({ children: content }) => <th className="border-b border-border bg-cream-100 px-3 py-2 text-left">{content}</th>,
           td: ({ children: content }) => <td className="border-b border-border px-3 py-2 align-top">{content}</td>,
-          a: ({ children: content, ...props }) => (
-            <a {...props} target="_blank" rel="noreferrer" className="font-medium text-accent underline underline-offset-4">
+          a: ({ children: content, href }) => (
+            <a href={href} target="_blank" rel="noreferrer" className="font-medium text-accent underline underline-offset-4">
               {content}
             </a>
           ),
