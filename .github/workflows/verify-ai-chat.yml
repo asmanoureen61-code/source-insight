@@ -44,7 +44,6 @@ jobs:
           fi
 
       - name: Fix known parser defect
-        if: github.event_name == 'push'
         run: |
           python - <<'PY'
           from pathlib import Path
