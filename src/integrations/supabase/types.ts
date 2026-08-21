@@ -14,13 +14,381 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      citations: {
+        Row: {
+          chunk_id: string | null
+          created_at: string
+          document_id: string | null
+          document_title: string
+          excerpt: string
+          id: string
+          marker: number
+          message_id: string
+          page_number: number | null
+          section: string | null
+          similarity: number | null
+          user_id: string
+        }
+        Insert: {
+          chunk_id?: string | null
+          created_at?: string
+          document_id?: string | null
+          document_title?: string
+          excerpt?: string
+          id?: string
+          marker?: number
+          message_id: string
+          page_number?: number | null
+          section?: string | null
+          similarity?: number | null
+          user_id: string
+        }
+        Update: {
+          chunk_id?: string | null
+          created_at?: string
+          document_id?: string | null
+          document_title?: string
+          excerpt?: string
+          id?: string
+          marker?: number
+          message_id?: string
+          page_number?: number | null
+          section?: string | null
+          similarity?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "citations_chunk_id_fkey"
+            columns: ["chunk_id"]
+            isOneToOne: false
+            referencedRelation: "document_chunks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "citations_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "citations_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conversations: {
+        Row: {
+          created_at: string
+          id: string
+          kb_id: string | null
+          pinned: boolean
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kb_id?: string | null
+          pinned?: boolean
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kb_id?: string | null
+          pinned?: boolean
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversations_kb_id_fkey"
+            columns: ["kb_id"]
+            isOneToOne: false
+            referencedRelation: "knowledge_bases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      document_chunks: {
+        Row: {
+          chunk_index: number
+          content: string
+          created_at: string
+          document_id: string
+          embedding: string | null
+          id: string
+          kb_id: string
+          page_number: number | null
+          section: string | null
+          user_id: string
+        }
+        Insert: {
+          chunk_index?: number
+          content: string
+          created_at?: string
+          document_id: string
+          embedding?: string | null
+          id?: string
+          kb_id: string
+          page_number?: number | null
+          section?: string | null
+          user_id: string
+        }
+        Update: {
+          chunk_index?: number
+          content?: string
+          created_at?: string
+          document_id?: string
+          embedding?: string | null
+          id?: string
+          kb_id?: string
+          page_number?: number | null
+          section?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "document_chunks_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "document_chunks_kb_id_fkey"
+            columns: ["kb_id"]
+            isOneToOne: false
+            referencedRelation: "knowledge_bases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      documents: {
+        Row: {
+          chunk_count: number
+          content: string
+          created_at: string
+          error_message: string | null
+          file_name: string | null
+          id: string
+          kb_id: string
+          mime_type: string | null
+          size_bytes: number
+          source_type: string
+          source_url: string | null
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          chunk_count?: number
+          content?: string
+          created_at?: string
+          error_message?: string | null
+          file_name?: string | null
+          id?: string
+          kb_id: string
+          mime_type?: string | null
+          size_bytes?: number
+          source_type?: string
+          source_url?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          chunk_count?: number
+          content?: string
+          created_at?: string
+          error_message?: string | null
+          file_name?: string | null
+          id?: string
+          kb_id?: string
+          mime_type?: string | null
+          size_bytes?: number
+          source_type?: string
+          source_url?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_kb_id_fkey"
+            columns: ["kb_id"]
+            isOneToOne: false
+            referencedRelation: "knowledge_bases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      knowledge_bases: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          name: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          id?: string
+          name: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          name?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          content?: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_settings: {
+        Row: {
+          citation_style: string
+          created_at: string
+          default_kb_id: string | null
+          model: string
+          response_length: string
+          retention_days: number
+          similarity_threshold: number
+          top_k: number
+          updated_at: string
+          user_id: string
+          workspace_name: string
+        }
+        Insert: {
+          citation_style?: string
+          created_at?: string
+          default_kb_id?: string | null
+          model?: string
+          response_length?: string
+          retention_days?: number
+          similarity_threshold?: number
+          top_k?: number
+          updated_at?: string
+          user_id: string
+          workspace_name?: string
+        }
+        Update: {
+          citation_style?: string
+          created_at?: string
+          default_kb_id?: string | null
+          model?: string
+          response_length?: string
+          retention_days?: number
+          similarity_threshold?: number
+          top_k?: number
+          updated_at?: string
+          user_id?: string
+          workspace_name?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      match_chunks: {
+        Args: {
+          p_embedding: string
+          p_kb_id: string
+          p_match_count?: number
+          p_threshold?: number
+        }
+        Returns: {
+          chunk_index: number
+          content: string
+          document_id: string
+          document_title: string
+          id: string
+          page_number: number
+          section: string
+          similarity: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
