@@ -19,10 +19,13 @@ export const SUPPORTED_MIME = [
 
 const TEXT_LIKE = /^(txt|md|csv)$/;
 
-export function assertOk<T>(res: { data: T | null; error: { message: string } | null }): T {
+export function assertOk<T>(res: {
+  data: T | null;
+  error: { message: string } | null;
+}): NonNullable<T> {
   if (res.error) throw new Error(res.error.message);
-  if (res.data === null) throw new Error("Not found");
-  return res.data;
+  if (res.data === null || res.data === undefined) throw new Error("Not found");
+  return res.data as NonNullable<T>;
 }
 
 export type IngestInput = {
