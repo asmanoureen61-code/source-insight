@@ -36,7 +36,7 @@ export function chunkText(raw: string): Chunk[] {
   for (const para of paragraphs) {
     const heading = para.match(/^#{1,6}\s+(.+)$/m);
     if (heading) {
-      pendingSection = heading[1].trim();
+      pendingSection = (heading[1] ?? "").trim() || null;
       if (!buffer.trim()) section = pendingSection;
     }
     if (buffer.length + para.length > TARGET && buffer.trim().length > 200) flush();
